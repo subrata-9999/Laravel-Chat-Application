@@ -22,18 +22,12 @@ Broadcast::channel('status-update', function ($user) {
     return $user;
 });
 
-Broadcast::channel('broadcast-message', function ($user) {
-    return true;
-});
 
-Broadcast::channel('test-channel', function ($user) {
-    return $user; // Or implement proper authorization logic
-});
-
-Broadcast::channel('chat.{receiver_id}', function ($user, $receiver_id) {
-    return $user->id === (int) $receiver_id;
-});
 
 Broadcast::channel('Message-send', function ($user) {
+    return $user;
+});
+
+Broadcast::channel('Message-delete', function ($user) {
     return $user;
 });

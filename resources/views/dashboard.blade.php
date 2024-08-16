@@ -6,10 +6,13 @@
     // echo '</pre>';
     // exit;
     ?>
+
     @if (count($users) > 0)
 
     <div class="outer_container">
         <div class="main_container_1">
+
+
             <!-- chat list -->
             <div class="chatlist_outerarea">
                 <div class="chatlist_area">
@@ -36,7 +39,7 @@
                                 </div>
                             </div>
                             <div class="chat_details_row2">
-                                <div class="chatitem_message">Hello, how are you hello?</div>
+                                <div class="chatitem_message">Hello, how are you?</div>
                                 <div class="chatitem_time">10:00 AM</div>
                             </div>
                         </div>
@@ -65,7 +68,7 @@
 
             <div class="chat_outerarea" style="display: none;">
                 <div class="chat_area">
-                    
+
                     <!-- chat person info -->
                     <div class="chatPersonDetails">
                         <div class="back_to_list" style="display: none; margin-right: 8px;"><i class="fa-solid fa-arrow-left"></i></div>
@@ -77,10 +80,29 @@
                             <h4 id="chatPersonInfo"></h4>
                         </div>
                     </div>
+                    <!-- Modal Structure -->
+                    <div id="messageModal" class="modal" style="display: none; z-index: 1000;">
+                        <div class="modal-content">
+                            <span class="close">&times;</span>
+                            <h2><b>Message</b></h2>
+                            <p id="modalMessageContent"></p>
+                            <p><strong>Message ID:</strong> <span id="modalMessageId"></span></p>
+                            <p><strong>Sender ID:</strong> <span id="modalSenderId"></span></p>
+                            <p><strong>Receiver ID:</strong> <span id="modalReceiverId"></span></p>
+                            <p><strong></strong> <span id="modalSentAt"></span></p>
+                            <form class="dlt_message" id="dlt_message">
+                            <input type="hidden" id="modalSentAtinput" value="">
+                            <button type="submit" class="deleteButton">Delete Message</button>
+                            </form>
+                        </div>
+                    </div>
                     <!-- chat messages -->
                     <div class="chat_area_messages" id="chat_area_messages">
 
                         <!-- the chat will be displayed here -->
+
+
+
 
 
 
@@ -118,4 +140,6 @@
         </div>
     </div>
     @endif
+
+
 </x-app-layout>

@@ -36,3 +36,5 @@ Route::post('/save-chat', [UserController::class, 'saveChat']);
 
 Route::post('/load-chat', [UserController::class, 'loadChat']);
 
+Route::post('/delete-chat', [UserController::class, 'deleteChat']);
+

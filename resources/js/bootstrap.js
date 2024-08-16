@@ -117,3 +117,12 @@ window.Echo.private("Message-send").listen(".message.sent", (e) => {
     }
 
 });
+
+window.Echo.private("Message-delete").listen("MessageDelete", (e) => {
+    console.log("Message deleted from echo:", e);
+    let messageId = e.id;
+    $(`div[data-id="${messageId}"]`).remove();
+    $('.deleteButton').attr('data-id', '').attr('data-receiver-id', '');
+
+
+});
