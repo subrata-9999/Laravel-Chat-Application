@@ -4,10 +4,10 @@
  * CSRF token as a header based on the value of the "XSRF" token cookie.
  */
 
-import axios from 'axios';
+import axios from "axios";
 window.axios = axios;
 
-window.axios.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
+window.axios.defaults.headers.common["X-Requested-With"] = "XMLHttpRequest";
 
 /**
  * Echo exposes an expressive API for subscribing to channels and listening
@@ -15,22 +15,23 @@ window.axios.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
  * allows your team to easily build robust real-time web applications.
  */
 
-import Echo from 'laravel-echo';
+import Echo from "laravel-echo";
 
-import Pusher from 'pusher-js';
+import Pusher from "pusher-js";
 window.Pusher = Pusher;
 
 window.Echo = new Echo({
-    broadcaster: 'pusher',
+    broadcaster: "pusher",
     key: import.meta.env.VITE_PUSHER_APP_KEY,
-    cluster: import.meta.env.VITE_PUSHER_APP_CLUSTER ?? 'mt1',
-    wsHost: import.meta.env.VITE_PUSHER_HOST ? import.meta.env.VITE_PUSHER_HOST : `ws-${import.meta.env.VITE_PUSHER_APP_CLUSTER}.pusher.com`,
+    cluster: import.meta.env.VITE_PUSHER_APP_CLUSTER ?? "mt1",
+    wsHost: import.meta.env.VITE_PUSHER_HOST
+        ? import.meta.env.VITE_PUSHER_HOST
+        : `ws-${import.meta.env.VITE_PUSHER_APP_CLUSTER}.pusher.com`,
     wsPort: import.meta.env.VITE_PUSHER_PORT ?? 80,
     wssPort: import.meta.env.VITE_PUSHER_PORT ?? 443,
-    forceTLS: (import.meta.env.VITE_PUSHER_SCHEME ?? 'https') === 'https',
-    enabledTransports: ['ws', 'wss'],
+    forceTLS: (import.meta.env.VITE_PUSHER_SCHEME ?? "https") === "https",
+    enabledTransports: ["ws", "wss"],
 });
-
 
 // Test Echo connection
 // window.Echo.connector.pusher.connection.bind('connected', function() {
@@ -76,10 +77,12 @@ window.Echo.join("status-update")
         console.log("Status updated:", e);
     });
 
-
 // Message send event
 window.Echo.private("Message-send").listen(".message.sent", (e) => {
-    console.log("New message. From "+e.chat.sender_id+" to "+e.chat.receiver_id, e);
+    console.log(
+        "New message. From " + e.chat.sender_id + " to " + e.chat.receiver_id,
+        e
+    );
     if (e.chat.receiver_id == sender_id && e.chat.sender_id == receiver_id) {
         let chatMessage = e.chat.message;
         let message_id = e.chat.id;
@@ -92,21 +95,22 @@ window.Echo.private("Message-send").listen(".message.sent", (e) => {
 
         // Format the date to IST (if needed for internal purposes but not displayed)
         let options = {
-            day: 'numeric',
-            month: 'short',
-            year: 'numeric',
-            hour: '2-digit',
-            minute: '2-digit',
-            second: '2-digit',
-            timeZone: 'Asia/Kolkata'
+            day: "numeric",
+            month: "short",
+            year: "numeric",
+            hour: "2-digit",
+            minute: "2-digit",
+            second: "2-digit",
+            timeZone: "Asia/Kolkata",
         };
-        let formattedDate = date.toLocaleString('en-GB', options);
+        let formattedDate = date.toLocaleString("en-GB", options);
 
         let chatMessageHtml = `<div class="chat_message_item chat_message_item_incoming"
                                    data-id="${message_id}"
                                    data-sender-id="${message_sender_id}"
                                    data-receiver-id="${message_receiver_id}"
-                                   data-created-at="${formattedDate}">
+                                   data-created-at="${formattedDate}"
+                                   data-chat-message="${chatMessage}">
                                     <div class="chat_message_content">
                                         <p>${chatMessage}</p>
                                     </div>
@@ -115,14 +119,43 @@ window.Echo.private("Message-send").listen(".message.sent", (e) => {
         $("#chat_area_messages").append(chatMessageHtml);
         scrollChatAreaToBottom();
     }
-
 });
 
 window.Echo.private("Message-delete").listen("MessageDelete", (e) => {
     console.log("Message deleted from echo:", e);
     let messageId = e.id;
     $(`div[data-id="${messageId}"]`).remove();
-    $('.deleteButton').attr('data-id', '').attr('data-receiver-id', '');
+    $(".deleteButton").attr("data-id", "").attr("data-receiver-id", "");
+});
 
+// Message update event
+window.Echo.private("Message-update").listen("MessageUpdate", (e) => {
+    console.log("Message updated from echo:", e);
+    let messageId = e.id;
+    let messageContent = e.message;
+
+    // Target the specific message container
+    let messageContainer = $(`div[data-id="${messageId}"]`);
+
+    // Remove the existing content completely
+    messageContainer.find('.chat_message_content').remove();
+
+
+    // Rebuild the content structure with the updated message
+    messageContainer.append(`
+        <div class="chat_message_content">
+            <p>${messageContent}</p>
+        </div>
+    `);
+
+
+     // Update the data-chatMessage attribute with the new message
+     messageContainer.attr("data-chat-message", messageContent);
+
+
+    // Log the current content for debugging
+    console.log("Updated content:", messageContainer.find('.chat_message_content p').text());
 
 });
+
+

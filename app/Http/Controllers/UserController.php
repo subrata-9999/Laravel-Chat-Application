@@ -8,6 +8,7 @@ use App\Models\Chat;
 use App\Events\MessageEvent;
 use App\Events\MessageSender;
 use App\Events\MessageDelete;
+use App\Events\MessageUpdate;
 use GuzzleHttp\Psr7\Message;
 use Illuminate\Support\Facades\Log;
 
@@ -93,6 +94,38 @@ class UserController extends Controller
             // Log the error and return a generic error message
             Log::error('Chat delete failed: ' . $e->getMessage());
             return response()->json(['status' => 'error', 'message' => 'An error occurred while deleting the chat']);
+        }
+    }
+    public function updateChat(Request $request)
+    {
+        // Validate the incoming request
+        $validated = $request->validate([
+            'id' => 'required|integer',
+            'message' => 'required|string',
+        ]);
+
+        try {
+            // Attempt to find the chat by its ID
+            $chat = Chat::find($validated['id']);
+
+            // Check if the chat exists
+            if (!$chat) {
+                return response()->json(['status' => 'error', 'message' => 'Chat not found']);
+            }
+
+            // Update the chat message
+            $chat->message = $validated['message'];
+            $chat->save();
+
+            event(new MessageUpdate($chat->id, $chat->message));
+
+
+            // Return success response
+            return response()->json(['status' => 'success', 'message' => 'Chat updated successfully']);
+        } catch (\Exception $e) {
+            // Log the error and return a generic error message
+            Log::error('Chat update failed: ' . $e->getMessage());
+            return response()->json(['status' => 'error', 'message' => 'An error occurred while updating the chat']);
         }
     }
 }

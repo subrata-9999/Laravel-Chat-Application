@@ -80,19 +80,30 @@
                             <h4 id="chatPersonInfo"></h4>
                         </div>
                     </div>
+                    <div id="updateModal_2" class="update_modal_2" style="display: none; z-index: 1000;">
+                        <div class="modal-content">
+                            <span class="close">&times;</span>
+                            <h2><b>Update</b></h2>
+                            <form class="update_message_2" id="update_message_2">
+                                <input type="text" id="updated_model_id" value="">
+                                <input type="text" id="updated_model_message" value="">
+                                <button type="submit" class="update_button_2">Update Message</button>
+                            </form>
+                        </div>
+                    </div>
                     <!-- Modal Structure -->
                     <div id="messageModal" class="modal" style="display: none; z-index: 1000;">
                         <div class="modal-content">
                             <span class="close">&times;</span>
-                            <h2><b>Message</b></h2>
-                            <p id="modalMessageContent"></p>
-                            <p><strong>Message ID:</strong> <span id="modalMessageId"></span></p>
-                            <p><strong>Sender ID:</strong> <span id="modalSenderId"></span></p>
-                            <p><strong>Receiver ID:</strong> <span id="modalReceiverId"></span></p>
                             <p><strong></strong> <span id="modalSentAt"></span></p>
+                            <form class="update_message" id="update_message">
+                                <input type="text" id="modalSentIDinputupdate" value="">
+                                <input type="text" id="modelMessageinputupdate" value="">
+                                <button type="submit" class="updateButton">Update Message</button>
+                            </form>
                             <form class="dlt_message" id="dlt_message">
-                            <input type="hidden" id="modalSentAtinput" value="">
-                            <button type="submit" class="deleteButton">Delete Message</button>
+                                <input type="text" id="modalSentIDinputdelete" value="">
+                                <button type="submit" class="deleteButton">Delete Message</button>
                             </form>
                         </div>
                     </div>

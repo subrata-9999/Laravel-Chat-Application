@@ -10,12 +10,11 @@ window.Echo = new Echo({
     key: import.meta.env.VITE_PUSHER_APP_KEY,
     cluster: import.meta.env.VITE_PUSHER_APP_CLUSTER,
     encrypted: false,
-    host: window.location.hostname + ':6001',
+    host: window.location.hostname + ":6001",
     // forceTLS: false,
     debug: true, // Enable debug mode
     disableStats: true, // Disable stats
 });
-
 
 $(document).ready(function () {
     // Set up AJAX
@@ -30,9 +29,7 @@ $(document).ready(function () {
             if (receiver_id) {
                 $(".chatlist_outerarea").hide();
                 $(".chat_outerarea").show();
-
-
-            }else{
+            } else {
                 $(".chat_outerarea").hide();
                 $(".chatlist_outerarea").show();
             }
@@ -42,7 +39,7 @@ $(document).ready(function () {
             $(".chatlist_outerarea").show();
             if (receiver_id) {
                 $(".chat_outerarea").show();
-            }else{
+            } else {
                 $(".chat_outerarea_pre").show();
             }
             $(".back_to_list").hide();
@@ -52,7 +49,6 @@ $(document).ready(function () {
 
     // Add event listener to all chat list items, for char loading, and chat area display
     $(".chatlist_item").on("click", function () {
-
         if ($(window).width() < 900) {
             $(".chatlist_outerarea").hide();
             $(".back_to_list").show();
@@ -116,21 +112,23 @@ $(document).ready(function () {
 
                     // Format the date to IST (if needed for internal purposes but not displayed)
                     let options = {
-                        day: 'numeric',
-                        month: 'short',
-                        year: 'numeric',
-                        hour: '2-digit',
-                        minute: '2-digit',
-                        second: '2-digit',
-                        timeZone: 'Asia/Kolkata'
+                        day: "numeric",
+                        month: "short",
+                        year: "numeric",
+                        hour: "2-digit",
+                        minute: "2-digit",
+                        second: "2-digit",
+                        timeZone: "Asia/Kolkata",
                     };
-                    let formattedDate = date.toLocaleString('en-GB', options);
+                    let formattedDate = date.toLocaleString("en-GB", options);
 
                     let chatMessageHtml = `<div class="chat_message_item chat_message_item_outgoing"
                                                data-id="${message_id}"
                                                data-sender-id="${message_sender_id}"
                                                data-receiver-id="${message_receiver_id}"
-                                               data-created-at="${formattedDate}">
+                                               data-created-at="${formattedDate}"
+                                               data-chatMessage="${chatMessage}">
+
                                                 <div class="chat_message_content">
                                                     <p>${chatMessage}</p>
                                                 </div>
@@ -138,8 +136,7 @@ $(document).ready(function () {
 
                     $("#chat_area_messages").append(chatMessageHtml);
                     scrollChatAreaToBottom();
-                }
-                 else {
+                } else {
                     console.log(response);
                 }
                 // console.log(response);
@@ -153,11 +150,19 @@ $(document).ready(function () {
     // For resizing the window
     $(window).resize(function () {
         handleResize();
-        scrollChatAreaToBottom()
+        scrollChatAreaToBottom();
     });
 
     // Function to open the message details modal at the clicked position
-    function openMessageDetails(messageId, chatMessage, senderId, receiverId, formattedDate, x, y) {
+    function openMessageDetails(
+        messageId,
+        chatMessage,
+        senderId,
+        receiverId,
+        formattedDate,
+        x,
+        y
+    ) {
         console.log("messageId from open message details function ", messageId);
         const modal = $("#messageModal");
 
@@ -168,47 +173,47 @@ $(document).ready(function () {
         $("#modalReceiverId").text(receiverId);
         $("#modalSentAt").text(formattedDate);
 
-        $("#modalSentAtinput").val(messageId);
-
-        console.log("Data ID set to:", $("#deleteButton").attr("data-id"));
-        console.log("Data Receiver ID set to:", $("#deleteButton").attr("data-receiver-id"));
-
+        // Set the message ID in the delete form hidden input
+        $("#modalSentIDinputdelete").val(messageId);
+        // Set the message ID in the update form hidden input
+        $("#modalSentIDinputupdate").val(messageId);
+        $("#modelMessageinputupdate").val(chatMessage);
 
         // Position the modal at the double-clicked location
         modal.css({
             top: y + "px",
-            left: x -290+ "px",
-            display: "block"
+            left: x - 290 + "px",
+            display: "block",
         });
-
-        // console.log("Opening message details...");
-        // console.log("Message ID:", messageId);
-        // console.log("Chat Message:", chatMessage);
-        // console.log("Sender ID:", senderId);
-        // console.log("Receiver ID:", receiverId);
-        // console.log("Formatted Date:", formattedDate);
-        // console.log("Closing message details modal...");
     }
 
     // Add event listener to all outgoing chat messages for double-click event
-    $(document).on('dblclick', '.chat_message_item_outgoing', function(event) {
-        let message_id = $(this).data('id');
-        let chatMessage = $(this).data('message');
-        let message_sender_id = $(this).data('sender-id');
-        let message_receiver_id = $(this).data('receiver-id');
-        let message_created_at = $(this).data('created-at');
-
+    $(document).on("dblclick", ".chat_message_item_outgoing", function (event) {
+        let message_id = $(this).data("id");
+        let chatMessage = $(this).find(".chat_message_content p").text();
+        let message_sender_id = $(this).data("sender-id");
+        let message_receiver_id = $(this).data("receiver-id");
+        let message_created_at = $(this).data("created-at");
+        console.log("from db click  "+chatMessage);
         // Get the position of the double-click event
         let x = event.pageX;
         let y = event.pageY;
 
-        openMessageDetails(message_id, chatMessage, message_sender_id, message_receiver_id, message_created_at, x, y);
+        openMessageDetails(
+            message_id,
+            chatMessage,
+            message_sender_id,
+            message_receiver_id,
+            message_created_at,
+            x,
+            y
+        );
     });
 
     // Delete the message when the delete button is clicked
-    $("#dlt_message").on('submit', function(e) {
+    $("#dlt_message").on("submit", function (e) {
         e.preventDefault(); // Prevent default form submission
-        let messageId = $("#modalSentAtinput").val();
+        let messageId = $("#modalSentIDinputdelete").val();
         console.log("Deleting message with ID:", messageId);
 
         $.ajax({
@@ -217,7 +222,7 @@ $(document).ready(function () {
             data: {
                 id: messageId,
             },
-            success: function(response) {
+            success: function (response) {
                 if (response.status == "success") {
                     // Remove the message from the chat area
                     $(`div[data-id="${messageId}"]`).remove();
@@ -227,59 +232,102 @@ $(document).ready(function () {
                     console.log(response.message);
                 }
             },
-            error: function(xhr, status, error) {
+            error: function (xhr, status, error) {
                 console.log("hey");
                 console.error("AJAX Error:", status, error);
             },
         });
     });
-    // $(".deleteButton").on('click', function(e) {
-    //     // e.preventDefault(); // Prevent default form submission
-    //     let messageId = $(this).data('id');
-    //     let receiverId = $(this).data('receiver-id');
-    //     console.log("Deleting message with ID:", messageId);
-    //     console.log("Receiver ID:", receiverId);
 
-    //     $.ajax({
-    //         url: "/delete-chat",
-    //         type: "POST",
-    //         data: {
-    //             id: messageId,
-    //             receiver_id: receiverId,
-    //         },
-    //         success: function(response) {
-    //             if (response.status == "success") {
-    //                 // Remove the message from the chat area
-    //                 $(`div[data-id="${messageId}"]`).remove();
-    //                 // Close the modal
-    //                 $("#messageModal").hide();
-    //             } else {
-    //                 console.log(response.message);
-    //             }
-    //         },
-    //         error: function(xhr, status, error) {
-    //             console.log("hey");
-    //             console.error("AJAX Error:", status, error);
-    //         },
-    //     });
-    // });
+    // Open the update message form when the update button is clicked
+    $("#update_message").on("submit", function (e) {
+        e.preventDefault(); // Prevent default form submission
+        let messageId = $("#modalSentIDinputupdate").val();
+        let chatMessage = $("#modelMessageinputupdate").val();
+        console.log(
+            "Updating message with ID:",
+            messageId + " to " + chatMessage
+        );
+
+        let x = e.pageX;
+        let y = e.pageY;
+
+        $("#messageModal").hide();
+        const update_model = $("#updateModal_2");
+
+        update_model.css({
+            top: y + "px",
+            left: x + "px",
+            display: "block",
+        });
+
+        // Set the message ID in the update form hidden input
+        $("#updated_model_id").val(messageId);
+        $("#updated_model_message").val(chatMessage);
+    });
+
+    // Update the message when the update form is submitted
+    $("#update_message_2").on("submit", function (e) {
+        e.preventDefault(); // Prevent default form submission
+        let messageId = $("#updated_model_id").val();
+        let chatMessage = $("#updated_model_message").val();
+        console.log(
+            "Updating message with ID:",
+            messageId + " to " + chatMessage
+        );
+
+        $.ajax({
+            url: "/update-chat",
+            type: "POST",
+            data: {
+                id: messageId,
+                message: chatMessage,
+            },
+            success: function (response) {
+                if (response.status == "success") {
+                    // Target the specific message container
+                    let messageContainer = $(`div[data-id="${messageId}"]`);
+
+                    // Update the message text in the chat area
+                    messageContainer
+                        .find(".chat_message_content p")
+                        .text(chatMessage);
+
+                    // Update the data-chatMessage attribute with the new message
+                    messageContainer.attr("data-chat-message", chatMessage);
+
+                    // Close the modal
+                    $("#updateModal_2").hide();
+                } else {
+                    console.log(response.message);
+                }
+            },
+            error: function (xhr, status, error) {
+                console.log("hey1");
+                console.error("AJAX Error:", status, error);
+            },
+        });
+    });
 
     // Close the modal when the close button is clicked
-    $("#messageModal .close").on('click', function() {
+    $("#messageModal .close").on("click", function () {
         $("#messageModal").hide();
     });
 
+    $("#updateModal_2 .close").on("click", function () {
+        $("#updateModal_2").hide();
+    });
 
     // Close the modal when the user clicks outside the modal
-    $(document).on('click', function(event) {
+    $(document).on("click", function (event) {
         if ($(event.target).closest("#messageModal").length === 0) {
             $("#messageModal").hide();
         }
+        if ($(event.target).closest("#updateModal_2").length === 0) {
+            $("#updateModal_2").hide();
+        }
     });
-
-
 });
-
 
 // Fetch chat messages
 function loadChatMessages(sender_id, receiver_id) {
@@ -307,15 +355,15 @@ function loadChatMessages(sender_id, receiver_id) {
 
                     // Format the date to IST
                     let options = {
-                        day: 'numeric',
-                        month: 'short',
-                        year: 'numeric',
-                        hour: '2-digit',
-                        minute: '2-digit',
-                        second: '2-digit',
-                        timeZone: 'Asia/Kolkata'
+                        day: "numeric",
+                        month: "short",
+                        year: "numeric",
+                        hour: "2-digit",
+                        minute: "2-digit",
+                        second: "2-digit",
+                        timeZone: "Asia/Kolkata",
                     };
-                    let formattedDate = date.toLocaleString('en-GB', options);
+                    let formattedDate = date.toLocaleString("en-GB", options);
 
                     let chatMessageHtml = "";
 
@@ -324,7 +372,7 @@ function loadChatMessages(sender_id, receiver_id) {
                                                data-id="${message_id}"
                                                data-sender-id="${message_sender_id}"
                                                data-receiver-id="${message_receiver_id}"
-                                               data-message="${chatMessage}"
+                                               data-chat-message="${chatMessage}"
                                                data-created-at="${formattedDate}"
 
                                                >
@@ -337,7 +385,7 @@ function loadChatMessages(sender_id, receiver_id) {
                                                data-id="${message_id}"
                                                data-sender-id="${message_sender_id}"
                                                data-receiver-id="${message_receiver_id}"
-                                               data-chatMessage="${chatMessage}"
+                                               data-chat-message="${chatMessage}"
                                                data-created-at="${formattedDate}">
                                                 <div class="chat_message_content"
 
@@ -352,9 +400,7 @@ function loadChatMessages(sender_id, receiver_id) {
 
                 $("#chat_area_messages").append(chatMessagesHtml);
                 scrollChatAreaToBottom();
-            }
-
-             else {
+            } else {
                 console.log(response);
             }
         },
@@ -362,8 +408,6 @@ function loadChatMessages(sender_id, receiver_id) {
             console.error("AJAX Error:", status, error);
         },
     });
-
-
 }
 
 // Scroll chat area to bottom
@@ -375,22 +419,12 @@ function scrollChatAreaToBottom() {
 }
 
 /// Back to chat list arrow, only for <900px
-$(".back_to_list").on("click", function ()
-{
+$(".back_to_list").on("click", function () {
     $(".chat_outerarea").hide();
     $(".back_to_list").hide();
     $(".chatlist_outerarea").show();
 });
 
-
 // $(document).ready(function() {
 
 // });
-
-
-
-
-
-
-
-

@@ -31,3 +31,8 @@ Broadcast::channel('Message-send', function ($user) {
 Broadcast::channel('Message-delete', function ($user) {
     return $user;
 });
+
+
+Broadcast::channel('Message-update', function ($user) {
+    return $user;
+});
