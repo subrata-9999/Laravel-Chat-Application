@@ -12,6 +12,10 @@
     <div class="outer_container">
         <div class="main_container_1">
 
+        <div id="youtubePicker" style="display: none;">
+    <iframe id="youtubeIframe" src="https://www.youtube.com/embed?listType=search&list=" width="800" height="600" frameborder="0" allowfullscreen></iframe>
+</div>
+
 
             <!-- chat list -->
             <div class="chatlist_outerarea">
@@ -80,29 +84,30 @@
                             <h4 id="chatPersonInfo"></h4>
                         </div>
                     </div>
+                    <!-- second modal for update message -->
                     <div id="updateModal_2" class="update_modal_2" style="display: none; z-index: 1000;">
                         <div class="modal-content">
                             <span class="close">&times;</span>
                             <h2><b>Update</b></h2>
                             <form class="update_message_2" id="update_message_2">
-                                <input type="text" id="updated_model_id" value="">
+                                <input type="hidden" id="updated_model_id" value="">
                                 <input type="text" id="updated_model_message" value="">
                                 <button type="submit" class="update_button_2">Update Message</button>
                             </form>
                         </div>
                     </div>
-                    <!-- Modal Structure -->
+                    <!-- Modal for Message options -->
                     <div id="messageModal" class="modal" style="display: none; z-index: 1000;">
                         <div class="modal-content">
                             <span class="close">&times;</span>
                             <p><strong></strong> <span id="modalSentAt"></span></p>
                             <form class="update_message" id="update_message">
-                                <input type="text" id="modalSentIDinputupdate" value="">
-                                <input type="text" id="modelMessageinputupdate" value="">
+                                <input type="hidden" id="modalSentIDinputupdate" value="">
+                                <input type="hidden" id="modelMessageinputupdate" value="">
                                 <button type="submit" class="updateButton">Update Message</button>
                             </form>
                             <form class="dlt_message" id="dlt_message">
-                                <input type="text" id="modalSentIDinputdelete" value="">
+                                <input type="hidden" id="modalSentIDinputdelete" value="">
                                 <button type="submit" class="deleteButton">Delete Message</button>
                             </form>
                         </div>
@@ -123,8 +128,11 @@
                     <!-- chat input -->
                     <div class="chat_area_input">
                         <form id="chat-form" class="chat_message_form">
+
+
+                            <div style="cursor: pointer;"><p style="cursor: pointer;" class="trigger">😀</p></div>
                             <div class="chat_message_input">
-                                <input type="text" id="chat_message_input" name="message" placeholder="Type a message">
+                            <input type="text" id="chat_message_input" name="message" placeholder="Type a message">
                             </div>
                             <div class="chat_message_send">
                                 <button type="submit" id="chat_message_send">Send</button>

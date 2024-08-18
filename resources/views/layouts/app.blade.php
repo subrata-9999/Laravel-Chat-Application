@@ -53,6 +53,7 @@
         var sender_id = @json(auth()->user()->id);
         var receiver_id;
     </script>
+    
 </body>
 
 </html>
